@@ -7,7 +7,7 @@ license = "GPLv3"
 packages = [{ include = "ylerobo" }]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 yle-dl = "^20211213"
 click = "^8.0.3"
 mock = "^4.0.3"
