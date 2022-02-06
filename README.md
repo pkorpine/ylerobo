@@ -18,16 +18,19 @@ ylerobo list
 
 # Performn download of new episodes.
 ylerobo download
+
+# Run web service.
+ylerobo serve
 ```
 
 
 ## Planned items
 
-- CI checks
 - docker image
-- REST interface
-- use YLE Areena account informaton to select series
+- use YLE Areena account information to select series
 - allow custom parameters for yle-dl (e.g. directories, naming, etc)
+- configuration file / environment variables
+- database version, migration support
 
 
 ## Dev notes

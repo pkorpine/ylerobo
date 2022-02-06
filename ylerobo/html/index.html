@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="libs/cute-alert/style.css">
+    <title>ylerobo</title>
+</head>
+
+<body>
+    <script src="libs/cute-alert/cute-alert.js"></script>
+    <form id="myForm">
+        <input type="text" id="url">
+        <select id="freq">
+            <option value="once">Once</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+        </select>
+        <input type="submit" value="Add">
+    </form>
+    <table>
+        <thead>
+            <th>&nbsp;</th>
+            <th>Title</th>
+            <th>Periodicity</th>
+            <th>Last download</th>
+        </thead>
+        <tbody id="myData"></tbody>
+    </table>
+    <script>
+        refresh();
+        document.getElementById("myForm").addEventListener("submit", add_series);
+
+        function refresh(highlight = null) {
+            fetch('/api/list')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    update_table(data, highlight);
+                })
+                .catch(function (err) {
+                    console.log('error: ' + err);
+                });
+        }
+
+        function update_table(data, highlight) {
+            var parent = document.getElementById("myData");
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            for (var i = 0; i < data.length; i++) {
+                let btn = document.createElement("button");
+                btn.innerHTML = "X";
+                const f = (p) => {
+                    return (e) => {
+                        cuteAlert({
+                            type: "question",
+                            title: "Are you sure?",
+                            message: "Removing " + p.title,
+                            confirmText: "Ok",
+                            calcelText: "Cancel",
+                        }).then((e) => {
+                            if (e == "confirm") {
+                                remove_series(p.program_id);
+                            }
+                        });
+                    }
+                };
+                btn.onclick = f(data[i]);
+
+                const tr = parent.insertRow();
+
+                var td = tr.insertCell();
+                td.appendChild(btn);
+
+                td = tr.insertCell();
+                var a = document.createElement("a");
+                a.href = data[i].url;
+                a.appendChild(document.createTextNode(data[i].title));
+                td.appendChild(a);
+
+                td = tr.insertCell();
+                td.innerHTML = data[i].freq;
+
+                td = tr.insertCell();
+                td.innerHTML = data[i].last_check;
+            }
+        }
+
+        function add_series(event) {
+            event.preventDefault();
+            let url = document.getElementById("url").value;
+            let freq = document.getElementById("freq").value;
+            fetch('/api/add?program=' + url + '&freq=' + freq)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (data.status == "Ok") {
+                        cuteToast({
+                            type: "info",
+                            message: "Added " + data.title,
+                            time: 5000,
+                        })
+                        refresh(data.program_id);
+                    } else {
+                        cuteToast({
+                            type: "error",
+                            message: "Failed to add",
+                            time: 5000,
+                        })
+                    }
+                })
+                .catch(function (err) {
+                    console.log('error: ' + err);
+                });
+        }
+
+        function remove_series(program_id) {
+            console.log(program_id);
+            fetch('/api/remove?program=' + program_id)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    cuteToast({
+                        type: "info",
+                        message: "Removed",
+                        time: 5000,
+                    })
+                    refresh(data.program_id);
+                })
+                .catch(function (err) {
+                    console.log('error: ' + err);
+                });
+        }
+    </script>
+</body>
+
+</html>

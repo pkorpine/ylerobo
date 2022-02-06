@@ -1,3 +1,4 @@
+from pathlib import Path
 import sqlite3
 import logging
 
@@ -5,9 +6,11 @@ logger = logging.getLogger(__name__)
 
 
 class Database:
-    def __init__(self):
+    def __init__(self, filename="ylerobo.db"):
+        if not Path(filename).exists():
+            logger.warning(f"Database file {filename} does not exist. Creating new.")
         self.con = sqlite3.connect(
-            "ylerobo.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+            filename, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
         )
         self.con.row_factory = sqlite3.Row
 

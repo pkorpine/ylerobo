@@ -1,9 +1,12 @@
 import logging
 import click
 from .database import Database
-from .yledl import yledl_metadata, yledl_download, get_title
-
-BASE_URL = "https://areena.yle.fi/"
+from .yledl import (
+    yledl_metadata,
+    yledl_download,
+    get_title,
+    get_program_id_and_url,
+)
 
 
 @click.group()
@@ -17,6 +20,7 @@ def cli(ctx, verbose, dryrun):
         datefmt="%Y-%m-%d %H:%M:%S",
     )
     ctx.ensure_object(dict)
+    ctx.obj["verbose"] = verbose
     ctx.obj["dryrun"] = dryrun
 
 
@@ -34,15 +38,11 @@ def init(force: bool):
 @click.option("--hourly", "freq", flag_value="hourly")
 @click.option("--daily", "freq", flag_value="daily")
 @click.option("--weekly", "freq", flag_value="weekly", default=True)
-@click.argument("url")
-def add(freq, url: str):
+@click.argument("program")
+def add(freq, program: str):
     """Add series to the database."""
     db = Database()
-    if url.startswith(BASE_URL):
-        program_id = url.split("/")[-1]
-    else:
-        program_id = url
-        url = BASE_URL + program_id
+    program_id, url = get_program_id_and_url(program)
     title = get_title(url)
     if db.add(program_id, url, title, freq):
         click.echo(f'Added "{title}"')
@@ -51,14 +51,11 @@ def add(freq, url: str):
 
 
 @cli.command()
-@click.argument("url")
-def remove(url: str):
+@click.argument("program")
+def remove(program: str):
     """Remove series to the database."""
     db = Database()
-    if url.startswith(BASE_URL):
-        program_id = url.split("/")[-1]
-    else:
-        program_id = url
+    program_id, _ = get_program_id_and_url(program)
     db.remove(program_id)
 
 
@@ -139,3 +136,12 @@ def download(ctx, force, program_id):
 
         if all_ok:
             db.update(series["program_id"])
+
+
+@cli.command()
+@click.option("--debug", is_flag=True)
+def serve(debug):
+    """Run web service."""
+    from . import service
+
+    service.serve(debug=debug)

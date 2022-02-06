@@ -2,3 +2,4 @@ __pycache__
 *.db
 storage/
 .vscode/
+.DS_Store
