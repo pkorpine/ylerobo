@@ -91,25 +91,26 @@ def download(ctx, force, program_id):
 
         if series["last_check"] and not force:
             if series["freq"] == "once":
-                click.echo("--> downloaded once")
+                if ctx.obj["verbose"]:
+                    click.echo("--> downloaded once")
                 continue
 
-            if series["freq"] == "hourly" and series["days_since_check"] < 1:
-                click.echo(
-                    f"--> downloaded {round(series['days_since_check']*60)} minutes ago"
-                )
+            mins = round(series["days_since_check"] * 24 * 60)
+            if series["freq"] == "hourly" and mins < 55:
+                if ctx.obj["verbose"]:
+                    click.echo(f"--> downloaded {mins} minutes ago")
                 continue
 
-            if series["freq"] == "daily" and series["days_since_check"] < 23:
-                click.echo(
-                    f"--> downloaded {round(series['days_since_check'])} hours ago"
-                )
+            hours = round(series["days_since_check"] * 24)
+            if series["freq"] == "daily" and hours < 24:
+                if ctx.obj["verbose"]:
+                    click.echo(f"--> downloaded {hours} hours ago")
                 continue
 
-            if series["freq"] == "weekly" and series["days_since_check"] < 23 * 7:
-                click.echo(
-                    f"--> downloaded {round(series['days_since_check']/24)} days ago"
-                )
+            days = round(series["days_since_check"])
+            if series["freq"] == "weekly" and days < 7:
+                if ctx.obj["verbose"]:
+                    click.echo(f"--> downloaded {days} days ago")
                 continue
 
         metadata = yledl_metadata(series["webpage"])
