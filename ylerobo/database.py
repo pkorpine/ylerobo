@@ -1,12 +1,14 @@
 from pathlib import Path
 import sqlite3
 import logging
+import os
 
+YLEROBO_DB = os.getenv("YLEROBO_DB", "ylerobo.db")
 logger = logging.getLogger(__name__)
 
 
 class Database:
-    def __init__(self, filename="ylerobo.db"):
+    def __init__(self, filename=YLEROBO_DB):
         if not Path(filename).exists():
             logger.warning(f"Database file {filename} does not exist. Creating new.")
         self.con = sqlite3.connect(

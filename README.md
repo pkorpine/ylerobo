@@ -23,13 +23,16 @@ ylerobo download
 ylerobo serve
 ```
 
+## Environment variables
+
+- `YLEROBO_DB`: Path to the sqlite database. Default: `ylerobo.db`.
+- `YLEDL_PARAMS`: Parameters given to yle-dl. Default: `--destdir storage`.
+
 
 ## Planned items
 
 - docker image
 - use YLE Areena account information to select series
-- allow custom parameters for yle-dl (e.g. directories, naming, etc)
-- configuration file / environment variables
 - database version, migration support
 
 

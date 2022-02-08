@@ -4,9 +4,11 @@ import json
 import logging
 import requests
 import re
+import os
+import shlex
 
 BASE_URL = "https://areena.yle.fi/"
-
+YLEDL_PARAMS = os.getenv("YLEDL_PARAMS", "--destdir storage")
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +32,10 @@ def yledl_metadata(url):
         metadata = json.loads(lines)
 
     with mock.patch("yledl.yledl.print_enc", steal_json):
-        yledl_main(["", "--showmetadata", url])
+        args = [""]
+        args += shlex.split(YLEDL_PARAMS)
+        args += ["--showmetadata", url]
+        yledl_main(args)
 
     return metadata
 
@@ -39,7 +44,11 @@ def yledl_download(url: str) -> bool:
     """Use yle-dl to download the episode."""
     assert url.startswith(BASE_URL)
     logger.info(f"Downloading {url}")
-    rc = yledl_main(["", "--destdir", "storage", url])
+    args = [""]
+    args += shlex.split(YLEDL_PARAMS)
+    args += [url]
+    logger.debug(f"yledl parameters: {args}")
+    rc = yledl_main(args)
     logger.info(f"Return value: {rc}")
     return rc == 0
 
