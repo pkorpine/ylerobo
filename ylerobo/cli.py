@@ -119,10 +119,12 @@ def download(ctx, force, program_id):
         all_ok = True
         for i, episode in enumerate(metadata):
             if db.episode_exists(episode["program_id"]):
+                # The episode has been downloaded previously.
                 click.echo(
-                    f"  Episode {i+1}/{total}: {episode['title']} exists, skipping"
+                    f"  Episode {i+1}/{total}: {episode['title']} already downloaded"
                 )
                 continue
+
             click.echo(f"- {episode['title']} downloading")
             if ctx.obj["dryrun"]:
                 ok = True
@@ -133,9 +135,11 @@ def download(ctx, force, program_id):
                 db.episode_add(series["program_id"], episode)
             else:
                 click.echo("Failed to download.")
-                ok = False
+                all_ok = False
 
         if all_ok:
+            # Mark series succesfully downloaded. This sets the next
+            # download to be tried after the specified interval.
             db.update(series["program_id"])
 
 
