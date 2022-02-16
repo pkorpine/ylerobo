@@ -33,7 +33,7 @@ ylerobo serve
 
 - docker image
 - use YLE Areena account information to select series
-- database version, migration support
+- migration when database schema changes
 
 
 ## Dev notes

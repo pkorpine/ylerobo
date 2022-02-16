@@ -20,10 +20,27 @@ class Database:
         cur = self.con.cursor()
         if force:
             logger.warning("Re-initializing database.")
+            cur.execute("""DROP TABLE IF EXISTS YleRobo""")
             cur.execute("""DROP TABLE IF EXISTS AreenaSeries""")
             cur.execute("""DROP TABLE IF EXISTS AreenaEpisode""")
 
         try:
+            cur.execute(
+                """
+                CREATE TABLE YleRobo (
+                    key VARCHAR(32) NOT NULL,
+                    value TINYTEXT,
+                    PRIMARY KEY (KEY)
+                )"""
+            )
+
+            cur.execute(
+                """
+                INSERT INTO YleRobo (key,value) VALUES (?,?)
+                """,
+                ("db_schema", 1),
+            )
+
             cur.execute(
                 """
                 CREATE TABLE AreenaSeries (
