@@ -31,7 +31,6 @@ ylerobo serve
 
 ## Planned items
 
-- docker image
 - use YLE Areena account information to select series
 - migration when database schema changes
 
