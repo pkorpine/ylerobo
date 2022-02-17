@@ -11,5 +11,6 @@ ENV YLEDL_PARAMS="--destdir /app/storage"
 COPY . /app/
 RUN cd app && poetry install --no-dev
 
+EXPOSE 8000
 ENTRYPOINT ["/app/ylerobo.sh"]
 CMD ["serve"]
