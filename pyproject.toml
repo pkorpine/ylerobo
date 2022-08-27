@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ylerobo"
-version = "0.1.1"
+version = "0.1.2"
 description = "A backend for periodically downloading series from YLE Areena."
 authors = ["Pekka Korpinen <pekka.korpinen@iki.fi>"]
 license = "GPLv3"
@@ -8,7 +8,7 @@ packages = [{ include = "ylerobo" }]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-yle-dl = "^20220518"
+yle-dl = "^20220704"
 click = "^8.0.3"
 mock = "^4.0.3"
 sanic = "^21.12.1"
