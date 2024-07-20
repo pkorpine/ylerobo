@@ -47,7 +47,8 @@ def add(freq, program: str):
     if db.add(program_id, url, title, freq):
         click.echo(f'Added "{title}"')
     else:
-        raise click.ClickException()
+        del db  # For pytest, otherwise SQLite connection remains
+        raise click.ClickException("Failed to add")
 
 
 @cli.command()
@@ -56,7 +57,11 @@ def remove(program: str):
     """Remove series to the database."""
     db = Database()
     program_id, _ = get_program_id_and_url(program)
-    db.remove(program_id)
+    if db.remove(program_id):
+        click.echo(f'Removed "{program}"')
+    else:
+        del db  # For pytest, otherwise SQLite connection remains
+        raise click.ClickException("Failed to remove")
 
 
 @cli.command()

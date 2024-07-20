@@ -21,8 +21,8 @@ def test_flow():
     assert result.exit_code == 0
 
     # Remove series
-    runner = CliRunner()
     result = runner.invoke(cli, ["remove", "https://areena.yle.fi/1-50754744"])
+    print(result)
     assert result.exit_code == 0
     result = runner.invoke(cli, ["remove", "https://areena.yle.fi/1-50754744"])
     assert result.exit_code == 1

@@ -16,6 +16,10 @@ class Database:
         )
         self.con.row_factory = sqlite3.Row
 
+    def __del__(self):
+        # Close connection to the SQLite on destroy
+        self.con.close()
+
     def init(self, force: bool):
         cur = self.con.cursor()
         if force:
@@ -98,8 +102,11 @@ class Database:
     def remove(self, program_id: str):
         cur = self.con.cursor()
         cur.execute("DELETE FROM AreenaSeries WHERE program_id=?", (program_id,))
+        if cur.rowcount == 0:
+            return False
         self.con.commit()
         logger.debug(f"Deleted {program_id}")
+        return True
 
     def update(self, program_id: str):
         cur = self.con.cursor()

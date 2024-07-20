@@ -44,3 +44,4 @@ jobs:
           source .venv/bin/activate
           black --check ylerobo tests
           flake8 --count --show-source --statistics ylerobo tests
+          pytest
