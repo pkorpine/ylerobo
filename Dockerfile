@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.12
 LABEL org.opencontainers.image.source="https://github.com/pkorpine/ylerobo"
 RUN apt update && apt install -y --no-install-recommends \
     ffmpeg \
