@@ -11,7 +11,8 @@ python = "^3.12"
 yle-dl = "^20240706"
 click = "^8.0.3"
 mock = "^4.0.3"
-sanic = "^21.12.1"
+sanic = "^23.12"
+setuptools = "^71.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^24.4.2"

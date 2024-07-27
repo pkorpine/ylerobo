@@ -43,8 +43,8 @@ async def list(request):
 
 
 HTML_DIR = Path(__file__).parent / "html"
-app.static("/", HTML_DIR.joinpath("index.html"))
-app.static("/libs", HTML_DIR.joinpath("libs"))
+app.static("/", HTML_DIR.joinpath("index.html"), name="static_root")
+app.static("/libs", HTML_DIR.joinpath("libs"), name="static_libs")
 
 
 @app.route("/zz")
@@ -52,9 +52,13 @@ async def test(request):
     return await response.file("html/index.html")
 
 
-def serve(host="0.0.0.0", port=8000, debug=False):
+@app.before_server_start
+async def attach_db(app, loop):
     app.ctx.db = Database()
-    app.run(host=host, port=port, debug=debug)
+
+
+def serve(host="0.0.0.0", port=8000, debug=False):
+    app.run(host=host, port=port, debug=debug, single_process=True)
 
 
 if __name__ == "__main__":

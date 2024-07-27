@@ -30,7 +30,7 @@ def init(force: bool):
     """Initialize database. Give --force to recreate database."""
     db = Database()
     if not db.init(force):
-        raise click.ClickException()
+        raise click.ClickException("Init failed")
 
 
 @cli.command()
